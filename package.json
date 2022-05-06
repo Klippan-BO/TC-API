@@ -4,7 +4,8 @@
   "description": "Trail, Trail data, Users, User data API",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "npx nodemon server"
   },
   "repository": {
     "type": "git",
