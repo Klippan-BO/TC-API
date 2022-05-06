@@ -1,1 +1,8 @@
+# journal
 journal/
+
+# private keys etc
+*.pem
+
+# environment
+node_modules/
