@@ -11,3 +11,6 @@ node_modules/
 
 # specific etl
 etl.sql
+
+# large files:
+db.sql
