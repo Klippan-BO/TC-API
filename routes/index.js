@@ -2,9 +2,9 @@ const router = require('express').Router();
 const trails = require('./trails');
 const users = require('./users');
 
-router.get('/trails/:trailId', trails);
+router.use('/trails', trails);
 
-router.get('users/:userId', users);
+router.use('/users', users);
 
 // data = { zip: 94010 , radius: 25 }
 module.exports = router;
