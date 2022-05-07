@@ -81,10 +81,10 @@ DROP TABLE IF EXISTS photos;
 
 CREATE TABLE photos (
   id                      SERIAL PRIMARY KEY,
-  trail_id                INTEGER,
   user_id                 INTEGER,
+  trail_id                INTEGER,
   url                     TEXT,
-  score                   INTEGER,
+  score                   INTEGER DEFAULT 0,
   timestamp               DATE DEFAULT NOW(),
   FOREIGN KEY (trail_id)  REFERENCES trail,
   FOREIGN KEY (user_id)   REFERENCES users
@@ -102,8 +102,8 @@ DROP TABLE IF EXISTS ratings;
 
 CREATE TABLE ratings (
   id                      SERIAL PRIMARY KEY,
-  trail_id                INTEGER NOT NULL,
   user_id                 INTEGER NOT NULL,
+  trail_id                INTEGER NOT NULL,
   difficulty              INTEGER NULL DEFAULT NULL,
   nature                  INTEGER NULL DEFAULT NULL,
   beauty                  INTEGER NULL DEFAULT NULL,
@@ -124,8 +124,8 @@ DROP TABLE IF EXISTS comments;
 
 CREATE TABLE comments (
   id                      SERIAL PRIMARY KEY,
-  trail_id                INTEGER NOT NULL,
   user_id                 INTEGER NOT NULL,
+  trail_id                INTEGER NOT NULL,
   body                    TEXT,
   helpfulness             INTEGER NOT NULL DEFAULT 0,
   reported                BOOL DEFAULT false,
