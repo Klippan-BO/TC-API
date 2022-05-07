@@ -3,7 +3,10 @@ const db = require('../models');
 
 router.get('/:trailId', (req, res) => {
   console.log('get trail from db');
-  res.send('getting trail');
+  db.getTrailById(req.params.trailId)
+    .then((trail) => {
+      res.send(trail);
+    });
 });
 
 module.exports = router;
