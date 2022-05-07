@@ -6,7 +6,7 @@
 DROP TABLE IF EXISTS trail;
 
 CREATE TABLE trail (
-  id                  SERIAL PRIMARY KEY,
+  id                  SERIAL PRIMARY KEY NOT NULL,
   name                VARCHAR(256),
   city                VARCHAR(128) NULL DEFAULT NULL,
   short_description   VARCHAR(256),
@@ -127,7 +127,7 @@ CREATE TABLE comments (
   user_id                 INTEGER NOT NULL,
   trail_id                INTEGER NOT NULL,
   body                    TEXT,
-  helpfulness             INTEGER NOT NULL DEFAULT 0,
+  helpfulness             INTEGER DEFAULT 0,
   reported                BOOL DEFAULT false,
   timestamp               DATE DEFAULT NOW(),
   FOREIGN KEY (trail_id)  REFERENCES trail,

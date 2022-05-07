@@ -8,3 +8,6 @@ journal/
 node_modules/
 .env
 .DS_Store
+
+# specific etl
+etl.sql
