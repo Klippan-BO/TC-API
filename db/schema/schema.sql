@@ -83,6 +83,7 @@ CREATE TABLE photos (
   id                      SERIAL PRIMARY KEY,
   user_id                 INTEGER,
   trail_id                INTEGER,
+  username                VARCHAR(80),
   url                     TEXT,
   score                   INTEGER DEFAULT 0,
   timestamp               TIMESTAMP DEFAULT NOW(),

@@ -42,6 +42,20 @@ curl 127.0.0.1:3005/trails/2
     nature: 2.92,
     difficulty: 3.8
   },
+  photos: [
+    {
+      username: 'gbigg2g',
+      score: 2,
+      timestamp: '2022-04-24',
+      url: "'https://unsplash.com/photos/d-Cr8MEW5Uc'"
+    },
+    {
+      username: 'scregeen1d',
+      score: 4,
+      timestamp: '2021-12-19',
+      url: "'https://unsplash.com/photos/tS9hJOnmKK8'"
+    }, . . .
+  ],
   comments: [
     {
       body: 'Inverse contextually-based solution',
