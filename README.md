@@ -36,6 +36,12 @@ curl 127.0.0.1:3005/trails/2
   lng: '-122.29066',
   elevation: '935',
   google_url: 'https://goo.gl/maps/QptjVk4XzvysMJzf9',
+  ratings: {
+    average: 3.18,
+    beauty: 2.36,
+    nature: 2.92,
+    difficulty: 3.8
+  },
   comments: [
     {
       body: 'Inverse contextually-based solution',
