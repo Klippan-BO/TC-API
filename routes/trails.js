@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const db = require('../models');
+const { trails } = require('../models');
 
 router.get('/:trailId', (req, res) => {
-  console.log('get trail from db');
-  db.getTrailById(req.params.trailId)
+  console.log('[routes] get trail from trails model');
+  trails.getTrailById(req.params.trailId)
     .then((trail) => {
       res.send(trail);
     });
