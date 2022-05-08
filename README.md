@@ -6,14 +6,19 @@ Trail Companion API is a RESTful API for serving up trail and user data to the T
 1. Configure environment variables:
 `$ nano example.env`
 2. Set the `DB_HOST` and `DB_PW`
-  - Optionally create a PostgreSQL database locally and follow [the ETL process](#creating-a-local-database-with-sample-data)
+  - Optionally, create a PostgreSQL database locally and follow [the ETL process](#creating-a-local-database-with-sample-data)
 3. After entering variables, save the example as `.env`
 
 ## Starting the API server:
 1. From the root directory of this repo run:
-`$ npm install`
+```
+$ npm install
+```
 2. From the root directory of this repo run:
-`$ npm start`
+```
+$ npm start
+```
+
 
 # Routes:
 ### `/trails/:trailId`
@@ -51,10 +56,10 @@ curl 127.0.0.1:3005/trails/2
 ```
 
 ### `/trails/:trailId/comments`
-- Ideal shape:
+- Route necessary?
 
 ### `/trails/:trailId/ratings`
-- Ideal shape:
+- Under construction
 
 
 # Creating a local database with sample data

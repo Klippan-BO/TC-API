@@ -3,7 +3,7 @@ const db = require('../db');
 module.exports = {
   getTrailById: (trailId) => {
     const query = `
-      SELECT name, description, length, lat,
+      SELECT id, name, description, length, lat,
         lng, elevation, google_url,
         (SELECT json_agg(comment)
         FROM (
