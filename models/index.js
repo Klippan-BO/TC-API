@@ -36,10 +36,10 @@ const db = require('../db');
 module.exports = {
   getTrailById: (trailId) => {
     const query = `
-      SELECT name, description, length,
+      SELECT name, description, length, lat, lng, elevation,
         (SELECT json_agg(comment)
         FROM (
-          SELECT body, username
+          SELECT body, username, helpfulness, reported, timestamp
           FROM comments
           WHERE comments.trail_id = t.id
           ) AS comment
