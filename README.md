@@ -1,14 +1,21 @@
 # TC-API
-Trail Companion API
+Trail Companion API is a RESTful API for serving up trail and user data to the Trail Companion App.
 
 # Usage:
+## Connecting to the database:
+1. Configure environment variables:
+`$ nano example.env`
+2. Set the `DB_HOST` and `DB_PW`
+  - Optionally create a PostgreSQL database locally and follow [the ETL process]()
+3. After entering variables, save the example as `.env`
+
+## Starting the API server:
 1. From the root directory of this repo run:
-`npm install`
-2. From the root directory of the repo run:
-`npm start`
+`$ npm install`
+2. From the root directory of this repo run:
+`$ npm start`
 
 # Routes:
-
 ### /trails/:trailId
 - Example usage:
 ```
