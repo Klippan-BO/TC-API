@@ -10,10 +10,10 @@ router.get('/:userId', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  console.log('[routes] login from user:', req.body.email);
-  users.loginByEmail(req.body.email)
-    .then((user) => {
-      res.send(user.id);
+  console.log('[routes] login request from user:', req.body);
+  users.login(req.body)
+    .then((userId) => {
+      res.send(userId);
     })
     .catch((err) => {
       console.log(err);
