@@ -64,7 +64,7 @@ CREATE TABLE friends (
   user_id                 INTEGER NOT NULL,
   friend_id               INTEGER NOT NULL,
   status                  VARCHAR(16),
-  timestamp               DATE DEFAULT NOW(),
+  timestamp               TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY (user_id)   REFERENCES users,
   FOREIGN KEY (friend_id) REFERENCES users
 );
@@ -83,9 +83,10 @@ CREATE TABLE photos (
   id                      SERIAL PRIMARY KEY,
   user_id                 INTEGER,
   trail_id                INTEGER,
+  username                VARCHAR(80),
   url                     TEXT,
   score                   INTEGER DEFAULT 0,
-  timestamp               DATE DEFAULT NOW(),
+  timestamp               TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY (trail_id)  REFERENCES trail,
   FOREIGN KEY (user_id)   REFERENCES users
 );
@@ -108,7 +109,7 @@ CREATE TABLE ratings (
   nature                  INTEGER NULL DEFAULT NULL,
   beauty                  INTEGER NULL DEFAULT NULL,
   stars                   INTEGER NULL DEFAULT NULL,
-  timestamp               DATE DEFAULT NOW(),
+  timestamp               TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY (trail_id)  REFERENCES trail,
   FOREIGN KEY (user_id)   REFERENCES users
 );
@@ -126,10 +127,11 @@ CREATE TABLE comments (
   id                      SERIAL PRIMARY KEY,
   user_id                 INTEGER NOT NULL,
   trail_id                INTEGER NOT NULL,
+  username                VARCHAR(80),
   body                    TEXT,
   helpfulness             INTEGER DEFAULT 0,
   reported                BOOL DEFAULT false,
-  timestamp               DATE DEFAULT NOW(),
+  timestamp               TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY (trail_id)  REFERENCES trail,
   FOREIGN KEY (user_id)   REFERENCES users
 );
