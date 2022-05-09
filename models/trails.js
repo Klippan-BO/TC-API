@@ -3,7 +3,7 @@ const db = require('../db');
 module.exports = {
   getTrailById: (trailId) => {
     const query = `
-      SELECT name, description, length, lat, lng, elevation, google_url,
+      SELECT id, name, description, length, lat, lng, elevation, google_url,
       (SELECT row_to_json(avgs)
       FROM (
           SELECT AVG(stars)::numeric(4,2) AS average,

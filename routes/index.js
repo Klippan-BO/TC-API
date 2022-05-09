@@ -6,5 +6,9 @@ router.use('/trails', trails);
 
 // router.use('/users', users);
 
-// data = { zip: 94010 , radius: 25 }
+router.get('/', (req, res) => {
+  console.log('[routes] request cookies:', req.cookies);
+  res.send(req.cookies);
+});
+
 module.exports = router;

@@ -13,4 +13,13 @@ module.exports = {
         console.log('[model] Error getting user', err);
       });
   },
+  loginByEmail: (email) => {
+    db.query('SELECT * FROM users WHERE email = $1', email)
+      .then((result) => {
+        console.log('[model] result of login:', result);
+      })
+      .catch((err) => {
+        console.log('[model] Error login getting user:', err);
+      });
+  },
 };
