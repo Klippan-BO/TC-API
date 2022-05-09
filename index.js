@@ -6,7 +6,7 @@ const router = require('./routes');
 const port = process.env.PORT;
 const app = express();
 
-app.use(cookieParser);
+// app.use(cookieParser);
 app.use(express.json());
 app.use(router);
 
