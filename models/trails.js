@@ -14,7 +14,7 @@ module.exports = {
         ) AS ratings,
         (SELECT json_agg(photo)
         FROM (
-          SELECT username, score, timestamp, url
+          SELECT id, username, score, timestamp, url, thumb
           FROM photos
           WHERE trail_id = t.id) AS photo
         ) AS photos,
