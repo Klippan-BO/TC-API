@@ -45,12 +45,12 @@ module.exports = {
     }
     const sessionId = uuid();
     const query = `
-      INSERT INTO users (email, session_id)
+      INSERT INTO users (email, username, bio, profile_image, session_id)
       VALUES ($1, $2)
       ON CONFLICT (email)
       DO UPDATE SET session_id = $2
       RETURNING id`;
-    return db.query(query, [user.email, sessionId])
+    return db.query(query, [user.email, user.username, user.bio, user.profile_image, sessionId])
       .then(({ rows }) => {
         console.log('[model] created new session for user:', rows[0], sessionId);
         return [rows[0], sessionId];
