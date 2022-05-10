@@ -24,7 +24,7 @@ $ npm start
 ### `/trails/:trailId`
 - Example usage:
 ```
-curl 127.0.0.1:3005/trails/2
+$ curl 127.0.0.1:3005/trails/2
 ```
 - Response:
 ```
@@ -75,8 +75,45 @@ curl 127.0.0.1:3005/trails/2
 }
 ```
 
-### `/trails/:trailId/comments`
-- Route necessary?
+### `/trails/map?coords`
+- Full query parameters:
+```
+/trails/map?swlat=__ &swlng=__ &nelat=__ &nelng=__
+```
+  - With values representing the coordinates of the *southwest* and *northeast* points of a boundary box
+    - `swlat` = Southwestern most latitude
+    - `swlng` = Southwestern most longitude
+    - `nelat` = Northeastern most latitude
+    - `nelng` = Northeastern most longitude
+- Example usage:
+```
+$ curl -G 127.0.0.1:3005/trails/map
+-d 'swlat=36.679200'
+-d 'swlng=-122.754904'
+-d 'nelat=37.379686'
+-d 'nelng=-121.975038'
+```
+- Response:
+```
+[
+  {
+    id: 4,
+    name: 'PG&E Loop Trail',
+    city: 'Cupertino',
+    short_description: 'Melted cheese boursin mascarpone. ',
+    length: '8.3',
+    elevation: '1624'
+  },
+  {
+    id: 5,
+    name: "Steven's Canyon Trail",
+    city: 'Cupertino',
+    short_description: 'Gummies wafer marshmallow liquorice chupa chups.',
+    length: '5.9',
+    elevation: '1079'
+  }
+]
+```
 
 ### `/trails/:trailId/ratings`
 - Under construction

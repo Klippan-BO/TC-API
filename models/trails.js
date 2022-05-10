@@ -35,4 +35,24 @@ module.exports = {
         console.log('[model] Error getting trail', err);
       });
   },
+  getTrailsInBounds: (coordinates) => {
+    const {
+      swlat,
+      swlng,
+      nelat,
+      nelng,
+    } = coordinates;
+    const query = `
+    SELECT id, name, city, short_description, length, elevation
+    FROM trail
+    WHERE lat >= $1 AND lat <= $2 AND lng >= $3 AND lng <= $4`;
+    return db.query(query, [swlat, nelat, swlng, nelng])
+      .then((results) => {
+        console.log('[model] found in-bound trails:', results.rows);
+        return results.rows;
+      })
+      .catch((err) => {
+        console.log('[model] error getting trails in bounds:', err);
+      });
+  },
 };
