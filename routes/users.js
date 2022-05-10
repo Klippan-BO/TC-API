@@ -3,7 +3,7 @@ const { users } = require('../models');
 
 router.get('/:userId', (req, res) => {
   console.log('[routes] get user from users model');
-  users.getUserById(req.params.userId)
+  users.getUserProfileById(req.params.userId)
     .then((user) => {
       res.send(user);
     })
