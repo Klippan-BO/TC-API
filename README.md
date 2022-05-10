@@ -115,8 +115,10 @@ $ curl -G 127.0.0.1:3005/trails/map
 ]
 ```
 
-### `/trails/:trailId/ratings`
-- Under construction
-
+### `POST users/login`
+- Required data:
+```
+{ email, }
+```
 
 # Creating a local database with sample data

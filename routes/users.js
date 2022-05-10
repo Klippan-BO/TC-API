@@ -1,14 +1,22 @@
 const router = require('express').Router();
 const { users } = require('../models');
 
-routes.get('/me', (req, res) => {
+router.get('/me', (req, res) => {
   // Gets user profile using session ID
   console.log('[routes] request to get current users full user profile');
   const session = req.cookies['trail-comp'];
+  const userId = req.cookies['trail-comp-user'];
   if (!session) {
     res.status(404).send('user not logged in!');
   } else {
-    users.getFullUserBySession(session)
+    users.getAuthorizedUserProfile(userId)
+      .then((user) => {
+        console.log('[routes] Sending back full user profile');
+        res.send(user);
+      })
+      .catch((err) => {
+        console.log('[routes] Error getting full user profile:', err);
+      });
   }
 });
 
@@ -23,6 +31,7 @@ router.get('/:userId', (req, res) => {
     });
 });
 
+// Built-in redundancy: (we can twease this out later. . or not)
 router.post('/login', (req, res) => {
   const session = req.cookies['trail-comp'];
   const user = req.body;
@@ -32,8 +41,12 @@ router.post('/login', (req, res) => {
   } else {
     users.login(user)
       .then(([userId, newCookie]) => {
-        // After login -> set new cookie named "trail-comp" to session ID recorded in DB
-        res.cookie('trail-comp', newCookie).send(userId);
+        // After login -> set new cookie named "trail-comp" to session ID recorded in DB:
+        res.cookie('trail-comp', newCookie);
+        // Attach another cookie with the userId for faster loading of the profile later:
+        res.cookie('trail-comp-user', userId);
+        // Send back user_id just for robustness:
+        res.send(userId);
       })
       .catch((err) => {
         console.log('[routes] Issue logging in user:', err);
