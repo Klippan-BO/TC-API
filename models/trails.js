@@ -20,7 +20,7 @@ module.exports = {
         ) AS photos,
         (SELECT json_agg(comment)
         FROM (
-          SELECT body, username
+          SELECT body, username, timestamp
           FROM comments
           WHERE trail_id = t.id) AS comment
         ) AS comments
