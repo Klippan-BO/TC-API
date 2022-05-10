@@ -87,6 +87,7 @@ CREATE TABLE photos (
   trail_id                INTEGER,
   username                VARCHAR(80),
   url                     TEXT,
+  thumb                   TEXT,
   score                   INTEGER DEFAULT 0,
   timestamp               TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY (trail_id)  REFERENCES trail,
