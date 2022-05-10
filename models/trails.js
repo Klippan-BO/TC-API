@@ -43,8 +43,22 @@ module.exports = {
       nelng,
     } = coordinates;
     const query = `
-    SELECT id, name, city, short_description, length, elevation
-    FROM trail
+    SELECT id, name, city, short_description, length, elevation,
+      (SELECT row_to_json(avgs)
+      FROM (
+          SELECT AVG(stars)::numeric(4,2) AS average,
+            AVG(beauty)::numeric(4,2) AS beauty,
+            AVG(nature)::numeric(4,2) AS nature,
+            AVG(difficulty)::numeric(4,2) AS difficulty
+          FROM ratings WHERE trail_id = t.id) AS avgs
+        ) AS ratings,
+      (SELECT json_agg(photo)
+      FROM (
+        SELECT score, thumb
+        FROM photos
+        WHERE trail_id = t.id) AS photo
+      ) AS photos
+    FROM trail AS t
     WHERE lat >= $1 AND lat <= $2 AND lng >= $3 AND lng <= $4`;
     return db.query(query, [swlat, nelat, swlng, nelng])
       .then((results) => {
