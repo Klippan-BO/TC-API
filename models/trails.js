@@ -43,7 +43,7 @@ module.exports = {
       nelng,
     } = coordinates;
     const query = `
-    SELECT id, name, city, short_description, length, elevation,
+    SELECT id, name, city, short_description, length, elevation, lat, lng,
       (SELECT row_to_json(avgs)
       FROM (
           SELECT AVG(stars)::numeric(4,2) AS average,
