@@ -24,7 +24,7 @@ $ npm start
 ### `/trails/:trailId`
 - Example usage:
 ```
-curl 127.0.0.1:3005/trails/2
+$ curl 127.0.0.1:3005/trails/2
 ```
 - Response:
 ```
@@ -75,10 +75,10 @@ curl 127.0.0.1:3005/trails/2
 }
 ```
 
-### `POST /trails/map`
-- Required data:
+### `/trails/map?coords`
+- Full query parameters:
 ```
-{ swlat, swlng, nelat, nelng }
+/trails/map?swlat=__ &swlng=__ &nelat=__ &nelng=__
 ```
   - With values representing the coordinates of the *southwest* and *northeast* points of a boundary box
     - `swlat` = Southwestern most latitude
@@ -87,9 +87,11 @@ curl 127.0.0.1:3005/trails/2
     - `nelng` = Northeastern most longitude
 - Example usage:
 ```
-curl -X POST 127.0.0.1:3005/trails/map
--H 'Content-Type:application/json'
--d '{"swlat":36.679200,"swlng":-122.754904,"nelat":37.379686,"nelng":-121.975038}'
+$ curl -G 127.0.0.1:3005/trails/map
+-d 'swlat=36.679200'
+-d 'swlng=-122.754904'
+-d 'nelat=37.379686'
+-d 'nelng=-121.975038'
 ```
 - Response:
 ```
