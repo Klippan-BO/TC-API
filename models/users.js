@@ -18,6 +18,9 @@ module.exports = {
   },
   login: (user) => {
     // if no cookie -> search db by email -> generate new cookie -> send it back
+    if (!user.email) {
+      throw new Error('Must provide email address at minimum.');
+    }
     const sessionId = uuid();
     const query = `
       INSERT INTO users (email, session_id)
