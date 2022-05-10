@@ -81,10 +81,10 @@ curl 127.0.0.1:3005/trails/2
 { swlat, swlng, nelat, nelng }
 ```
   - With values representing the coordinates of the *southwest* and *northeast* points of a boundary box
-  - `swlat` = Southwestern most latitude
-  - `swlng` = Southwestern most longitude
-  - `nelat` = Northeastern most latitude
-  - `nelng` = Northeastern most longitude
+    - `swlat` = Southwestern most latitude
+    - `swlng` = Southwestern most longitude
+    - `nelat` = Northeastern most latitude
+    - `nelng` = Northeastern most longitude
 - Example usage:
 ```
 curl -X POST 127.0.0.1:3005/trails/map
