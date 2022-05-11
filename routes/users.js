@@ -31,7 +31,6 @@ router.get('/:userId', (req, res) => {
     });
 });
 
-// Built-in redundancy: (we can twease this out later. . or not)
 router.post('/login', (req, res) => {
   const session = req.cookies['trail-comp'];
   const user = req.body;
@@ -50,6 +49,7 @@ router.post('/login', (req, res) => {
       })
       .catch((err) => {
         console.log('[routes] Issue logging in user:', err);
+        res.status(404).send('[TC-API] User not found!');
       });
   }
 });
