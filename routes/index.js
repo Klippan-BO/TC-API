@@ -11,9 +11,5 @@ router.use('/users', users);
 router.use('/photos', photos);
 
 router.use('/comments', comments);
-// router.get('/', (req, res) => {
-//   console.log('[routes] request cookies:', req.cookies);
-//   res.send(req.cookies);
-// });
 
 module.exports = router;
