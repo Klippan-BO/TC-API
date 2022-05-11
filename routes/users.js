@@ -2,12 +2,14 @@ const router = require('express').Router();
 const { users } = require('../models');
 
 router.get('/me', (req, res) => {
-  // Gets user profile using session ID
+  // Gets user profile using cookie
+  // Currently does not authenticate the user by comparing the session id
+  // Only checks if the cookie exists
   console.log('[routes] request to get current users full user profile');
   const session = req.cookies['trail-comp'];
   const userId = req.cookies['trail-comp-user'];
   if (!session) {
-    res.status(404).send('user not logged in!');
+    res.status(404).send('[TC-API] User not logged in!');
   } else {
     users.getAuthorizedUserProfile(userId)
       .then((user) => {
@@ -31,6 +33,21 @@ router.get('/:userId', (req, res) => {
     });
 });
 
+router.post('/signup', (req, res) => {
+  const user = req.body;
+  console.log('[routes] sign-up request from user:', user);
+  users.signup(user)
+    .then((userSession) => {
+      res.cookie('trail-comp', userSession.session_id);
+      res.cookie('trail-comp-user', userSession.id);
+      res.send(userSession);
+    })
+    .catch((err) => {
+      console.log('[routes] error with sign-up', err);
+      res.status(500).send('[TC-API] Issues with sign-up');
+    });
+});
+
 router.post('/login', (req, res) => {
   const session = req.cookies['trail-comp'];
   const user = req.body;
@@ -39,13 +56,13 @@ router.post('/login', (req, res) => {
     res.send('User logged in');
   } else {
     users.login(user)
-      .then(([userId, newCookie]) => {
-        // After login -> set new cookie named "trail-comp" to session ID recorded in DB:
-        res.cookie('trail-comp', newCookie);
-        // Attach another cookie with the userId for faster loading of the profile later:
-        res.cookie('trail-comp-user', userId);
-        // Send back user_id just for robustness:
-        res.send(userId);
+      .then((userSession) => {
+        // After login -> set new cookie named "trail-comp" to session ID recorded in DB
+        // Attach another cookie with the userId for faster loading of the profile later
+        // Send back user_id just for robustness?
+        res.cookie('trail-comp', userSession.session_id);
+        res.cookie('trail-comp-user', userSession.id);
+        res.send(userSession);
       })
       .catch((err) => {
         console.log('[routes] Issue logging in user:', err);

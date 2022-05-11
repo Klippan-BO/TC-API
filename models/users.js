@@ -1,6 +1,73 @@
 const { v4: uuid } = require('uuid');
 const db = require('../db');
 
+const login = (user) => {
+  // if no cookie -> search db by email -> generate new cookie -> send it back
+  if (!user.email) {
+    throw new Error('[TC-API] No email address provided!');
+  }
+
+  const q1 = 'SELECT id FROM users WHERE email = $1';
+  return db.query(q1, [user.email])
+    .then((result) => {
+      console.log('[model] searching for users by email found:', result.rows[0]);
+      if (result.rowCount === 0) {
+        throw new Error('[TC-API] User not found');
+      }
+      const sessionId = uuid();
+      const q2 = `
+        UPDATE users
+        SET session_id = $1
+        WHERE email = $2
+        RETURNING id, email, session_id`;
+      return db.query(q2, [sessionId, user.email])
+        // eslint-disable-next-line no-shadow
+        .then(({ rows }) => {
+          const userSession = rows[0];
+          console.log('[model] created new session for user:', userSession);
+          return userSession;
+        });
+    })
+    .catch((err) => {
+      console.log('[model] Error with login/session making:', err);
+      throw err;
+    });
+};
+
+const signup = (user) => {
+  // validateUser(user); // to validate user object first?
+  const {
+    email,
+    username,
+    profileImage,
+    bio,
+  } = user;
+  const q1 = 'SELECT id, email, session_id FROM users WHERE email = $1';
+  return db.query(q1, [email])
+    .then((result) => {
+      if (result.rowCount > 0) {
+        // user already exists!
+        console.log('[model] user email already exists in db. logging in. . . :', result.rows[0]);
+        return login(user);
+      }
+      // since user doesn't exist time to create row
+      const sessionId = uuid();
+      const q2 = `
+        INSERT INTO users (email, username, bio, profile_image, session_id)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, email, session_id`;
+      return db.query(q2, [email, username, bio, profileImage, sessionId])
+        .then(({ rows }) => {
+          const userSession = rows[0];
+          console.log('[model] new user created:', userSession);
+          return userSession;
+        });
+    })
+    .catch((err) => {
+      console.log('[model] error on sign-up:', err);
+    });
+};
+
 module.exports.getUserProfileById = (userId) => {
   // this method should: check if the requesting user has the same email address as the userId
   // they are requesting
@@ -37,38 +104,9 @@ module.exports.getUserProfileById = (userId) => {
     });
 };
 
-module.exports.login = (user) => {
-  // if no cookie -> search db by email -> generate new cookie -> send it back
-  if (!user.email) {
-    throw new Error('[TC-API] No email address provided!');
-  }
+module.exports.login = login;
 
-  const sessionId = uuid();
-
-  const q1 = 'SELECT id FROM users WHERE email = $1';
-  return db.query(q1, [user.email])
-    .then((result) => {
-      console.log('[model] searching for users by email found:', result.rows[0]);
-      if (result.rowCount === 0) {
-        throw new Error('[TC-API] User not found');
-      }
-      const q2 = `
-        UPDATE users
-        SET session_id = $1
-        WHERE email = $2
-        RETURNING id`;
-      return db.query(q2, [sessionId, user.email])
-        // eslint-disable-next-line no-shadow
-        .then(({ rows }) => {
-          console.log('[model] created new session for user:', rows[0], sessionId);
-          return [rows[0], sessionId];
-        });
-    })
-    .catch((err) => {
-      console.log('[model] Error with login/session making:', err);
-      throw err;
-    });
-};
+module.exports.signup = signup;
 
 module.exports.getAuthorizedUserProfile = (userId) => {
   const query = `
