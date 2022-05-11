@@ -72,6 +72,17 @@ module.exports.login = login;
 
 module.exports.signup = signup;
 
+module.exports.deleteUser = (userId) => {
+  const query = `
+    DELETE FROM users
+    WHERE id = $1`;
+  return db.query(query, [userId])
+    .catch((err) => {
+      console.log('[model] delete user failed:', err);
+      throw err;
+    });
+};
+
 module.exports.getUserProfileById = (userId) => {
   // this method should: check if the requesting user has the same email address as the userId
   // they are requesting
