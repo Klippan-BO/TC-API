@@ -6,7 +6,6 @@ router.post('/add', (req, res) => {
   console.log('[routes] incoming friend request:', req.body);
   friends.sendFriendRequest(userId, friendId)
     .then((friendship) => {
-      console.log('[route] friendship created:', friendship);
       res.send(friendship);
     })
     .catch((err) => {
