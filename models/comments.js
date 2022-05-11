@@ -6,7 +6,7 @@ module.exports.addComment = (comment) => {
     INSERT INTO comments (user_id, trail_id, body, username)
     SELECT $1, $2, $3, u.username
     FROM users u
-    WHERE u.id = 5
+    WHERE u.id = $1
     RETURNING id, username, body, timestamp;`;
   return db.query(query, [userId, trailId, body])
     .then(({ rows }) => {
