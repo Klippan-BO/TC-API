@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { activity } = require('../models');
 
 // "activity" object to post -> { trailId: 5 [,userId: 99] }
-router.post('/activity', (req, res) => {
+router.post('/add', (req, res) => {
   const userId = req.cookies['trail-comp-user'] || req.body.userId;
   const { trailId } = req.body;
   console.log(`[routes] user activity posted: user-cookie: ${userId}, activity: ${req.body}`);
