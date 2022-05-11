@@ -47,13 +47,13 @@ module.exports.sendFriendRequest = (userId, friendId) => (
 );
 
 module.exports.acceptFriendRequest = (userId, friendId, friendshipId) => {
-  if (friendshipId) {
-    const q1 = `
-      UPDATE friends
-      SET status = 'accepted'
-      WHERE id = $1
-      RETURNING id, status, timestamp`;
-    return db.query(q1, [friendshipId])
+  const query = `
+    UPDATE friends
+    SET status = 'accepted'
+    WHERE id = $1
+    RETURNING id, status, timestamp`;
+  const acceptRequest = (fid) => (
+    db.query(query, [fid])
       .then(({ rows }) => {
         const friendship = rows[0];
         console.log('[model] friend request accepted:', friendship);
@@ -61,7 +61,28 @@ module.exports.acceptFriendRequest = (userId, friendId, friendshipId) => {
       })
       .catch((err) => {
         console.log('[model] error updating friendship:', err);
-      });
+      })
+  );
+
+  if (friendshipId) {
+    return acceptRequest(friendshipId);
   }
 
+  return checkCurrentFriendship(userId, friendId)
+    .then((friendship) => {
+      if (friendship === false) {
+        throw new Error('[TC-API] no pending friend request');
+      }
+      if (friendship.status === 'blocked') {
+        throw new Error('[TC-API] user is blocked');
+      }
+      if (friendship.status === 'accepted') {
+        throw new Error('[TC-API] users already friends');
+      }
+      return acceptRequest(friendship.id);
+    })
+    .catch((err) => {
+      console.log('[model] error accepting friend request', err);
+      throw err;
+    });
 };
