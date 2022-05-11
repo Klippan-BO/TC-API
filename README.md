@@ -21,6 +21,9 @@ $ npm start
 
 
 # Routes:
+
+## Trails
+
 ### `/trails/:trailId`
 - Example usage:
 ```
@@ -74,7 +77,6 @@ $ curl 127.0.0.1:3005/trails/2
   ]
 }
 ```
-
 ### `/trails/map?coords`
 - Full query parameters:
 ```
@@ -115,10 +117,82 @@ $ curl -G 127.0.0.1:3005/trails/map
 ]
 ```
 
-### `POST users/login`
-- Required data:
+## Users
+
+### `POST users/signup`
+- Generates a `user_id` for the user by adding them to the database.
+- Required data: `{ email: <user email address> }`
+  - Optional: `{ email, profile_image, bio, username }`
+- Example usage:
 ```
-{ email, }
+curl -X POST 127.0.0.1:3005/users/signup -d '{ "email": "ecurrie8@state.gov", "bio": "love hiking" }'
+```
+- Response:
+```
+{
+  id: 9,
+  email: 'ecurrie8@state.gov',
+  session_id: 'c4a14664-03e5-4cf4-a979-46fb13a4ee33'
+}
+```
+  - Session ID get bound to user as a cookie (but so does the user_id for purposes of development)
+
+
+### `POST users/login`
+- Required data: `{ email: <user email address> }`
+- Example usage:
+```
+curl -X POST 127.0.0.1:3005/users/login -d '{ "email": "ecurrie8@state.gov" }'
+```
+- Response:
+```
+{
+  id: 9,
+  email: 'ecurrie8@state.gov',
+  session_id: 'c4a14664-03e5-4cf4-a979-46fb13a4ee33'
+}
+```
+  - Session ID get bound to user as a cookie (but so does the user_id for purposes of development)
+
+
+### `/users/me`
+- Gets user profile based on cookie
+```
+curl 127.0.0.1:3005/users/me -b 'trail-comp=abcd123' -b 'trail-comp-id=10'
+```
+- Response:
+```
+{
+  id: 10,
+  username: 'slascell9',
+  profile_image: 'http://dummyimage.com/165x106.png/ff4444/ffffff',
+  bio: 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vel augue.',
+  trails: [
+    {
+      id: 2,
+      name: 'Crystal Springs and Dean Trail',
+      short_description: 'Small batch offal selfies chartreuse meditation fanny pack bespoke 3 wolf moon.',
+      photos: [Array],
+      rating: [Object]
+    }
+  ],
+  friends: [
+    {
+      id: 54,
+      username: 'bperschke1h',
+      profile_image: 'http://dummyimage.com/210x180.png/dddddd/000000',
+      status: 'approved'
+    },
+    {
+      id: 82,
+      username: 'dspry29',
+      profile_image: 'http://dummyimage.com/185x236.png/5fa2dd/ffffff',
+      status: 'approved'
+    }
+  ]
+}
 ```
 
+
 # Creating a local database with sample data
+Under construction
