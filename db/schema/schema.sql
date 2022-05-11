@@ -45,7 +45,7 @@ CREATE TABLE user_activity (
   id                      SERIAL PRIMARY KEY,
   user_id                 INTEGER NOT NULL,
   trail_id                INTEGER NOT NULL,
-  times_visited           INTEGER NOT NULL DEFAULT 1,
+  username                VARCHAR(80),
   timestamp               TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY (user_id)   REFERENCES users,
   FOREIGN KEY (trail_id)  REFERENCES trail
