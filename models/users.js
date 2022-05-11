@@ -39,7 +39,7 @@ const signup = (user) => {
   const {
     email,
     username,
-    profileImage,
+    photo,
     bio,
   } = user;
   const q1 = 'SELECT id, email, session_id FROM users WHERE email = $1';
@@ -56,7 +56,7 @@ const signup = (user) => {
         INSERT INTO users (email, username, bio, profile_image, session_id)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING id, email, session_id`;
-      return db.query(q2, [email, username, bio, profileImage, sessionId])
+      return db.query(q2, [email, username, bio, photo, sessionId])
         .then(({ rows }) => {
           const userSession = rows[0];
           console.log('[model] new user created:', userSession);
@@ -67,6 +67,10 @@ const signup = (user) => {
       console.log('[model] error on sign-up:', err);
     });
 };
+
+module.exports.login = login;
+
+module.exports.signup = signup;
 
 module.exports.getUserProfileById = (userId) => {
   // this method should: check if the requesting user has the same email address as the userId
@@ -103,10 +107,6 @@ module.exports.getUserProfileById = (userId) => {
       console.log('[model] Error getting user', err);
     });
 };
-
-module.exports.login = login;
-
-module.exports.signup = signup;
 
 module.exports.getAuthorizedUserProfile = (userId) => {
   const query = `
