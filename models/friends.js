@@ -1,49 +1,67 @@
 const db = require('../db');
 
 const checkCurrentFriendship = (userId, friendId) => {
-  // First -> Need to check friends status
-  const q1 = `
+  // First -> Need to check friends status -> returns friendship for updating
+  const query = `
     SELECT id, user_id, friend_id, status
     FROM friends
     WHERE (user_id = $1 AND friend_id = $2)
     OR (friend_id = $1 AND user_id = $2)`;
-  return db.query(q1, [userId, friendId])
+  return db.query(query, [userId, friendId])
     .then((result) => {
       if (result.rowCount === 0) {
-        return 'none';
+        return false;
       }
-      return result.rows[0].status;
+      const friendship = result.rows[0];
+      return friendship;
     })
     .catch((err) => {
       console.log('[model] error checking friend status:', err);
     });
 };
 
-module.exports.sendFriendRequest = (userId, friendId) => {
-  // First -> Need to check friends status
+module.exports.sendFriendRequest = (userId, friendId) => (
   checkCurrentFriendship(userId, friendId)
-    .then((status) => {
-      if (status === 'none') {
-        // send request
-        // return request id
+    .then((friendship) => {
+      if (friendship.status === 'blocked') {
+        throw new Error('[TC-API] user is blocked');
       }
-      if (status === 'blocked') {
-        // return failure -> blocked
+      if (friendship.status === 'pending') {
+        throw new Error('[TC-API] friend request already pending');
       }
-      if (status === 'pending') {
-        // return failure -> request pending
-      }
+      const query = `
+      INSERT INTO friends (user_id, friend_id, status)
+      VALUES ($1, $2, 'pending')
+      RETURNING id, status, timestamp`;
+      return db.query(query, [userId, friendId])
+        .then(({ rows }) => {
+          const request = rows[0];
+          console.log('[model] friend request made:', request);
+          return request;
+        });
     })
     .catch((err) => {
       console.log('[model] failed to send friend request:', err);
       throw err;
-    });
-  // INSERT INTO friends (user_id, friend_id, status)`;
-};
+    })
+);
 
-/*
-SELECT id, user_id, friend_id, status
-FROM friends
-WHERE (user_id = $1 AND friend_id = $2)
-OR (friend_id = $1 AND user_id = $2)`
-*/
+module.exports.acceptFriendRequest = (userId, friendId, friendshipId) => {
+  if (friendshipId) {
+    const q1 = `
+      UPDATE friends
+      SET status = 'accepted'
+      WHERE id = $1
+      RETURNING id, status, timestamp`;
+    return db.query(q1, [friendshipId])
+      .then(({ rows }) => {
+        const friendship = rows[0];
+        console.log('[model] friend request accepted:', friendship);
+        return friendship;
+      })
+      .catch((err) => {
+        console.log('[model] error updating friendship:', err);
+      });
+  }
+
+};
