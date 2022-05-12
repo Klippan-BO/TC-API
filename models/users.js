@@ -126,33 +126,47 @@ module.exports.getAuthorizedUserProfile = (userId) => {
   const query = `
     SELECT id, username, profile_image, bio,
     (SELECT json_agg(tr)
-    FROM (
+      FROM (
       SELECT t.id, name, short_description,
       (SELECT array_agg(photo)
-      FROM (
-        SELECT url FROM photos
-        WHERE trail_id = t.id) AS photo
-      ) AS photos,
+        FROM (
+          SELECT url FROM photos
+          WHERE trail_id = t.id) AS photo
+        ) AS photos,
       (SELECT row_to_json(avgs)
       FROM (
-        SELECT AVG(stars)::numeric(4,2) AS average,
-        AVG(beauty)::numeric(4,2) AS beauty,
-        AVG(nature)::numeric(4,2) AS nature,
-        AVG(difficulty)::numeric(4,2) AS difficulty
-        FROM ratings WHERE trail_id = t.id) AS avgs
-      ) AS rating
-      FROM trail t JOIN user_activity a
-      ON t.id = a.trail_id AND a.user_id = u.id) AS tr
-    ) AS trails,
-    (SELECT json_agg(friend)
-    FROM (
-      SELECT *
-      FROM friends_list uf JOIN users f
-      ON (uf.user_id = u.id AND uf.friend_id = f.id)
-      ) AS friend
-    ) AS friends
-  FROM users AS u
-  WHERE u.id = $1;`;
+          SELECT AVG(stars)::numeric(4,2) AS average,
+            AVG(beauty)::numeric(4,2) AS beauty,
+            AVG(nature)::numeric(4,2) AS nature,
+            AVG(difficulty)::numeric(4,2) AS difficulty
+            FROM ratings WHERE trail_id = t.id) AS avgs
+          ) AS rating
+        FROM trail t JOIN user_activity a
+        ON t.id = a.trail_id AND a.user_id = u.id) AS tr
+        ) AS trails,
+      (SELECT json_agg(friend)
+      FROM (
+          SELECT *
+          FROM friends_list uf JOIN users f
+            ON (uf.user_id = u.id AND uf.friend_id = f.id)
+            ) AS friend
+        ) AS friends,
+      (SELECT json_agg(request)
+      FROM (
+        SELECT *
+        FROM friend_requests uf JOIN users f
+        ON (uf.friend_id = u.id AND uf.user_id = f.id)
+        ) AS request
+      ) AS incoming_requests,
+      (SELECT json_agg(request)
+      FROM (
+        SELECT *
+        FROM friend_requests uf JOIN users f
+        ON (uf.user_id = u.id AND uf.friend_id = f.id)
+        ) AS request
+      ) AS outgoing_requests
+    FROM users AS u
+    WHERE u.id = $1`;
   return db.query(query, [userId])
     .then(({ rows }) => {
       const userProfile = rows[0];
