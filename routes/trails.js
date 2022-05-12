@@ -21,4 +21,17 @@ router.get('/:trailId', (req, res) => {
     });
 });
 
+router.post('/add', (req, res) => {
+  const trail = req.body;
+  console.log('[routes] request to add new trail:', trail);
+  trails.createTrail(trail)
+    .then((newTrail) => {
+      res.send(newTrail);
+    })
+    .catch((err) => {
+      console.log('[routes] Error creating trail:', err);
+      res.status(500).send('failed');
+    });
+});
+
 module.exports = router;
