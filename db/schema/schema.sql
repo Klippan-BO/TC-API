@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
   id               SERIAL PRIMARY KEY,
-  email            TEXT NOT NULL UNIQUE,
+  email            TEXT NOT NULL,
   username         VARCHAR(80),
   profile_image    TEXT DEFAULT NULL,
   bio              TEXT DEFAULT NULL,
