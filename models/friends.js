@@ -1,7 +1,8 @@
 const db = require('../db');
 
 const checkCurrentFriendship = (userId, friendId) => {
-  // First -> Need to check friends status -> returns friendship for updating
+  // First -> Need to check friends status -> returns friendship (with ID) for updating
+  // or else false if friendship does not yet exist
   const query = `
     SELECT id, user_id, friend_id, status
     FROM friends
@@ -88,4 +89,48 @@ module.exports.acceptFriendRequest = (userId, friendId, friendshipId) => {
       console.log('[model] error accepting friend request', err);
       throw err;
     });
+};
+
+module.exports.rejectFriendRequest = (userId, friendId, friendshipId) => {
+  const query = `
+    UPDATE friends
+    SET status = 'rejected'
+    WHERE id = $1
+    RETURNING id, status, timestamp`;
+  const rejectRequest = (fid) => (
+    db.query(query, [fid])
+      .then(({ rows }) => {
+        const friendship = rows[0];
+        console.log('[model] friend request rejected:', friendship);
+        return friendship;
+      })
+      .catch((err) => {
+        console.log('[model] error updating friendship:', err);
+      })
+  );
+
+  if (friendshipId) {
+    return rejectRequest(friendshipId);
+  }
+
+  return checkCurrentFriendship(userId, friendId)
+  .then((friendship) => {
+    if (friendship === false) {
+      throw new Error('[TC-API] no pending friend request');
+    }
+    if (friendship.status === 'blocked') {
+      throw new Error('[TC-API] user is blocked');
+    }
+    if (friendship.status === 'accepted') {
+      throw new Error('[TC-API] users already friends');
+    }
+    if (friendship.user_id === userId) {
+      throw new Error('[TC-API] cannot accept your own request');
+    }
+    return rejectRequest(friendship.id);
+  })
+  .catch((err) => {
+    console.log('[model] error accepting friend request', err);
+    throw err;
+  });
 };
