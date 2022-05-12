@@ -146,21 +146,21 @@ module.exports.getAuthorizedUserProfile = (userId) => {
         ) AS trails,
       (SELECT json_agg(friend)
       FROM (
-          SELECT *
+          SELECT uf.id, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
           FROM friends_list uf JOIN users f
             ON (uf.user_id = u.id AND uf.friend_id = f.id)
             ) AS friend
         ) AS friends,
       (SELECT json_agg(request)
       FROM (
-        SELECT *
+        SELECT uf.id, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
         FROM friend_requests uf JOIN users f
         ON (uf.friend_id = u.id AND uf.user_id = f.id)
         ) AS request
       ) AS incoming_requests,
       (SELECT json_agg(request)
       FROM (
-        SELECT *
+        SELECT uf.id, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
         FROM friend_requests uf JOIN users f
         ON (uf.user_id = u.id AND uf.friend_id = f.id)
         ) AS request
