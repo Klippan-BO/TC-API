@@ -146,7 +146,7 @@ module.exports.getAuthorizedUserProfile = (userId) => {
     ) AS trails,
     (SELECT json_agg(fnds)
     FROM (
-      SELECT uf.id AS friendship, f.id AS friend_id, f.username, f.profile_image, uf.status
+      SELECT uf.id AS friendship, f.id AS friend_id, f.username, f.profile_image, uf.status, f.bio
       FROM friends uf JOIN users f
       ON (uf.user_id = u.id AND uf.friend_id = f.id)
       OR (uf.friend_id = u.id AND uf.user_id = f.id)
