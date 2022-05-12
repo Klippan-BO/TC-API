@@ -27,7 +27,7 @@ module.exports.createTrail = (trail) => {
 
 module.exports.getTrailById = (trailId) => {
   const query = `
-    SELECT id, name, description, length, lat, lng, elevation, google_url, short_description
+    SELECT id, name, description, length, lat, lng, elevation, google_url, short_description,
     (SELECT row_to_json(avgs)
     FROM (
         SELECT AVG(stars)::numeric(4,2) AS average,
