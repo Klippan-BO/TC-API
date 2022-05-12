@@ -23,7 +23,7 @@ $ npm start
 # Routes:
 
 ## Trails
-
+---
 ### `/trails/:trailId`
 - Example usage:
 ```
@@ -118,7 +118,7 @@ $ curl -G 127.0.0.1:3005/trails/map
 ```
 
 ## Users
-
+---
 ### `POST users/signup`
 - Generates a `user_id` for the user by adding them to the database.
 - Required data: `{ email: <user email address> }`
@@ -192,6 +192,18 @@ curl 127.0.0.1:3005/users/me -b 'trail-comp=abcd123' -b 'trail-comp-id=10'
   ]
 }
 ```
+
+## Comments:
+---
+
+## Photos:
+---
+
+## Activities:
+---
+
+## Friends:
+---
 
 
 # Creating a local database with sample data
