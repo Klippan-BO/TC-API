@@ -5,21 +5,18 @@ router.get('/me', (req, res) => {
   // Gets user profile using cookie
   // Currently does not authenticate the user by comparing the session id
   // Only checks if the cookie exists
+  const { userId } = req.query;
+  // const session = req.cookies['trail-comp'];
+  // const userId = req.cookies['trail-comp-user'];
   console.log('[routes] request to get current users full user profile');
-  const session = req.cookies['trail-comp'];
-  const userId = req.cookies['trail-comp-user'];
-  if (!session) {
-    res.status(404).send('[TC-API] User not logged in!');
-  } else {
-    users.getAuthorizedUserProfile(userId)
-      .then((user) => {
-        console.log('[routes] Sending back full user profile');
-        res.send(user);
-      })
-      .catch((err) => {
-        console.log('[routes] Error getting full user profile:', err);
-      });
-  }
+  users.getAuthorizedUserProfile(userId)
+    .then((user) => {
+      console.log('[routes] Sending back full user profile');
+      res.send(user);
+    })
+    .catch((err) => {
+      console.log('[routes] Error getting full user profile:', err);
+    });
 });
 
 router.get('/:userId', (req, res) => {
