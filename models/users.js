@@ -144,13 +144,12 @@ module.exports.getAuthorizedUserProfile = (userId) => {
       FROM trail t JOIN user_activity a
       ON t.id = a.trail_id AND a.user_id = u.id) AS tr
     ) AS trails,
-    (SELECT json_agg(fnds)
+    (SELECT json_agg(friend)
     FROM (
-      SELECT f.id, f.username, f.profile_image, uf.status
-      FROM friends uf JOIN users f
+      SELECT *
+      FROM friends_list uf JOIN users f
       ON (uf.user_id = u.id AND uf.friend_id = f.id)
-      OR (uf.friend_id = u.id AND uf.user_id = f.id)
-      ) AS fnds
+      ) AS friend
     ) AS friends
   FROM users AS u
   WHERE u.id = $1;`;
