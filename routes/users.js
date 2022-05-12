@@ -1,6 +1,27 @@
 const router = require('express').Router();
 const { users } = require('../models');
 
+router.get('/me', (req, res) => {
+  // Gets user profile using cookie
+  // Currently does not authenticate the user by comparing the session id
+  // Only checks if the cookie exists
+  console.log('[routes] request to get current users full user profile');
+  const session = req.cookies['trail-comp'];
+  const userId = req.cookies['trail-comp-user'];
+  if (!session) {
+    res.status(404).send('[TC-API] User not logged in!');
+  } else {
+    users.getAuthorizedUserProfile(userId)
+      .then((user) => {
+        console.log('[routes] Sending back full user profile');
+        res.send(user);
+      })
+      .catch((err) => {
+        console.log('[routes] Error getting full user profile:', err);
+      });
+  }
+});
+
 router.get('/:userId', (req, res) => {
   console.log('[routes] get user from users model');
   users.getUserProfileById(req.params.userId)
@@ -12,23 +33,55 @@ router.get('/:userId', (req, res) => {
     });
 });
 
-router.post('/login', (req, res) => {
-  const cookie = req.cookies['trail-comp'];
+router.post('/signup', (req, res) => {
   const user = req.body;
-  console.log('[routes] login request from user:', user, cookie);
-  if (cookie) {
+  console.log('[routes] sign-up request from user:', user);
+  users.signup(user)
+    .then((userSession) => {
+      res.cookie('trail-comp', userSession.session_id);
+      res.cookie('trail-comp-user', userSession.id);
+      res.send(userSession);
+    })
+    .catch((err) => {
+      console.log('[routes] error with sign-up', err);
+      res.status(500).send('[TC-API] Issues with sign-up');
+    });
+});
+
+router.post('/login', (req, res) => {
+  const session = req.cookies['trail-comp'];
+  const user = req.body;
+  console.log('[routes] login request from user:', user, session);
+  if (session) {
     res.send('User logged in');
   } else {
     users.login(user)
-      .then(([userId, newCookie]) => {
-        res.cookie(newCookie).send(userId);
+      .then((userSession) => {
+        // After login -> set new cookie named "trail-comp" to session ID recorded in DB
+        // Attach another cookie with the userId for faster loading of the profile later
+        // Send back user_id just for robustness?
+        res.cookie('trail-comp', userSession.session_id);
+        res.cookie('trail-comp-user', userSession.id);
+        res.send(userSession);
       })
       .catch((err) => {
         console.log('[routes] Issue logging in user:', err);
+        res.status(404).send('[TC-API] User not found!');
       });
   }
 });
 
-// users.login (user) => [userId, cookie]
+router.delete('/:userId', (req, res) => {
+  console.log('[routes] request to delete user:', req.params.userId);
+  users.deleteUser(req.params.userId)
+    .then((update) => {
+      console.log(update);
+      res.status(204).send(update);
+    })
+    .catch((err) => {
+      console.log('[route] delete error', err);
+      res.status(404).send(err);
+    });
+});
 
 module.exports = router;

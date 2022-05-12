@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
   id               SERIAL PRIMARY KEY,
-  email            TEXT NOT NULL UNIQUE,
+  email            TEXT NOT NULL,
   username         VARCHAR(80),
   profile_image    TEXT DEFAULT NULL,
   bio              TEXT DEFAULT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE user_activity (
   id                      SERIAL PRIMARY KEY,
   user_id                 INTEGER NOT NULL,
   trail_id                INTEGER NOT NULL,
-  times_visited           INTEGER NOT NULL DEFAULT 1,
+  username                VARCHAR(80),
   timestamp               TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY (user_id)   REFERENCES users,
   FOREIGN KEY (trail_id)  REFERENCES trail
