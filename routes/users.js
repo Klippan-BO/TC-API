@@ -70,6 +70,18 @@ router.post('/login', (req, res) => {
       });
   }
 });
-// users.login (user) => [userId, cookie]
+
+router.delete('/:userId', (req, res) => {
+  console.log('[routes] request to delete user:', req.params.userId);
+  users.deleteUser(req.params.userId)
+    .then((update) => {
+      console.log(update);
+      res.status(204).send(update);
+    })
+    .catch((err) => {
+      console.log('[route] delete error', err);
+      res.status(404).send(err);
+    });
+});
 
 module.exports = router;

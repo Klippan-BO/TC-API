@@ -74,9 +74,12 @@ module.exports.signup = signup;
 
 module.exports.deleteUser = (userId) => {
   const query = `
-    DELETE FROM users
-    WHERE id = $1`;
+    UPDATE users
+    SET username = 'deleted', email = 'deleted', bio = '', profile_image = '', session_id = ''
+    WHERE id = $1
+    RETURNING *`;
   return db.query(query, [userId])
+    .then(({ rows }) => rows[0])
     .catch((err) => {
       console.log('[model] delete user failed:', err);
       throw err;
