@@ -125,7 +125,7 @@ module.exports.rejectFriendRequest = (userId, friendId, friendshipId) => {
       throw new Error('[TC-API] users already friends');
     }
     if (friendship.user_id === userId) {
-      throw new Error('[TC-API] cannot accept your own request');
+      throw new Error('[TC-API] cannot reject your own request');
     }
     return rejectRequest(friendship.id);
   })
