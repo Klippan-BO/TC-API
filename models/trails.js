@@ -16,13 +16,15 @@ module.exports = {
         FROM (
           SELECT id, username, score, timestamp, url, thumb
           FROM photos
-          WHERE trail_id = t.id) AS photo
+          WHERE trail_id = t.id
+          ORDER BY score DESC) AS photo
         ) AS photos,
         (SELECT json_agg(comment)
         FROM (
           SELECT body, username, timestamp
           FROM comments
-          WHERE trail_id = t.id) AS comment
+          WHERE trail_id = t.id
+          ORDER BY timestamp DESC) AS comment
         ) AS comments
       FROM trail AS t
       WHERE t.id = $1;`;

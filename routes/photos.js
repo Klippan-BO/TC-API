@@ -16,8 +16,24 @@ router.get('/test', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  photos.insertPhoto(req.body);
-  res.send('hello from photos post');
+  photos.insertPhoto(req.body)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+router.get('/:trail_id', (req, res) => {
+  photos.getPhotos(req.params.trail_id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+  // res.send({ message: `im back u looking for photos of ${req.params.trail_id}?` });
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@ const db = require('../db');
 
 module.exports = {
   upvotePhoto: (id) => {
-    console.log(id, 'in the query')
+    console.log(id, 'in the query');
     const query = `
       UPDATE photos
       SET score = score + 1
@@ -26,10 +26,17 @@ module.exports = {
     const photoValues = [user_id, trail_id, username, url, thumb];
 
     console.log(query, photoValues);
-    // return db.query(query, photoValues)
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-    return 'hello from here';
+    return db.query(query, photoValues);
+    // .then((result) => {
+    //   console.log(result);
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
+  },
+
+  getPhotos: (trail_id) => {
+    const query = `Select * from photos p where p.trail_id = ${trail_id};`;
+    return db.query(query);
   },
 };
