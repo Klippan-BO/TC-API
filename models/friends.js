@@ -20,7 +20,7 @@ const checkFriendStatus = (userId, friendId) => {
       if (!rows) {
         return 0;
       }
-      const status = rows[0].status;
+      const { status } = rows[0];
       return status;
     })
     .catch((err) => {
@@ -82,7 +82,7 @@ module.exports.reject = (friendshipId) => {
   return db.query(query, [friendshipId])
     .then(({ rows }) => rows[0])
     .catch((err) => {
-      console.log('[model] error rejecting request', err)
+      console.log('[model] error rejecting request', err);
       throw err;
     });
-}
+};
