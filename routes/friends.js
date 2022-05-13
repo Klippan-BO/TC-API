@@ -41,18 +41,4 @@ router.delete(':friendshipId/reject', (req, res) => {
     });
 });
 
-router.put('/reject', (req, res) => {
-  const { userId, friendId, friendshipId } = req.body;
-  console.log('[routes] friend request rejection:', req.body);
-  friends.rejectFriendRequest(userId, friendId, friendshipId)
-    .then((friendship) => {
-      console.log('[route] friendship updated:', friendship);
-      res.send(friendship);
-    })
-    .catch((err) => {
-      console.log('[routes] Error rejecting friendship', err);
-      res.status(500).send(err);
-    })
-})
-
 module.exports = router;
