@@ -2,9 +2,8 @@ const router = require('express').Router();
 const comments = require('../models/comments');
 
 router.post('/add', (req, res) => {
-  const comment = req.body;
-  console.log('[routes] posting new comment:', comment);
-  comments.addComment(comment)
+  console.log('[routes] posting new comment:', req.body.comment);
+  comments.addComment(req.body.comment)
     .then((newComment) => {
       res.status(204).send(newComment);
     })
