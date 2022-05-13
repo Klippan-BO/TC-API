@@ -1,17 +1,19 @@
+/* eslint-disable camelcase */
 const db = require('../db');
 
 module.exports.addComment = (comment) => {
-  const { userId, trailId, body } = comment;
+  const { user_id, trail_id, body } = comment;
+  console.log('[model] comment here', comment);
   const query = `
     INSERT INTO comments (user_id, trail_id, body, username)
     SELECT $1, $2, $3, u.username
     FROM users u
     WHERE u.id = $1
     RETURNING id, username, body, timestamp;`;
-  return db.query(query, [userId, trailId, body])
-    .then(({ rows }) => {
+  return db.query(query, [user_id, trail_id, body])
+    .then((rows) => {
       const newComment = rows[0];
-      console.log('[model] new comment added:', newComment);
+      console.log('[model] new comment added:', comment);
       return newComment;
     })
     .catch((err) => {

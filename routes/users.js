@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { users } = require('../models');
+const { users, friends } = require('../models');
 
 router.get('/me', (req, res) => {
   // Gets user profile using cookie
@@ -16,6 +16,19 @@ router.get('/me', (req, res) => {
     })
     .catch((err) => {
       console.log('[routes] Error getting full user profile:', err);
+    });
+});
+
+router.get('/:userId/friends', (req, res) => {
+  const { userId } = req.params;
+  console.log('requesting friend info for:', req.params);
+  friends.getFriendsByUserId(userId)
+    .then((friendList) => {
+      res.send(friendList);
+    })
+    .catch((err) => {
+      console.log('[routes] error getting friends list:', err);
+      res.status(500).send(err);
     });
 });
 
