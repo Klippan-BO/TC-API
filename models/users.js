@@ -27,10 +27,6 @@ const login = (user) => {
           console.log('[model] created new session for user:', userSession);
           return userSession;
         });
-    })
-    .catch((err) => {
-      console.log('[model] Error with login/session making:', err);
-      throw err;
     });
 };
 
@@ -143,28 +139,7 @@ module.exports.getAuthorizedUserProfile = (userId) => {
           ) AS rating
         FROM trail t JOIN user_activity a
         ON t.id = a.trail_id AND a.user_id = u.id) AS tr
-        ) AS trails,
-      (SELECT json_agg(friend)
-      FROM (
-          SELECT uf.id, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
-          FROM friends_list uf JOIN users f
-            ON (uf.user_id = u.id AND uf.friend_id = f.id)
-            ) AS friend
-        ) AS friends,
-      (SELECT json_agg(request)
-      FROM (
-        SELECT uf.id, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
-        FROM friend_requests uf JOIN users f
-        ON (uf.friend_id = u.id AND uf.user_id = f.id)
-        ) AS request
-      ) AS incoming_requests,
-      (SELECT json_agg(request)
-      FROM (
-        SELECT uf.id, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
-        FROM friend_requests uf JOIN users f
-        ON (uf.user_id = u.id AND uf.friend_id = f.id)
-        ) AS request
-      ) AS outgoing_requests
+        ) AS trails
     FROM users AS u
     WHERE u.id = $1`;
   return db.query(query, [userId])

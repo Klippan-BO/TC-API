@@ -67,9 +67,6 @@ router.post('/login', (req, res) => {
   } else {
     users.login(user)
       .then((userSession) => {
-        // After login -> set new cookie named "trail-comp" to session ID recorded in DB
-        // Attach another cookie with the userId for faster loading of the profile later
-        // Send back user_id just for robustness?
         res.cookie('trail-comp', userSession.session_id);
         res.cookie('trail-comp-user', userSession.id);
         res.send(userSession);
