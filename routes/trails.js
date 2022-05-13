@@ -36,7 +36,7 @@ router.post('/add', (req, res) => {
 
 router.post('/rate', (req, res) => {
   const ratings = req.body;
-  console.log('[routes] request to rate trail:', trail);
+  console.log('[routes] request to rate trail:', ratings);
   trails.rate(ratings)
     .then((data) => {
       res.send(data);
