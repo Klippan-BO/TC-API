@@ -16,6 +16,7 @@ router.get('/test', (req, res) => {
 });
 
 router.post('/', (req, res) => {
+  console.log('[routes] request to post photo:', req.body);
   photos.insertPhoto(req.body)
     .then((result) => {
       res.send(result);
