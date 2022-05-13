@@ -22,9 +22,6 @@ const checkFriendStatus = (userId, friendId) => {
       }
       const { status } = rows[0];
       return status;
-    })
-    .catch((err) => {
-      console.log('[model] error checking friend status:', err);
     });
 };
 
@@ -41,10 +38,6 @@ module.exports.checkFriendStatus = (userId, friendId) => (
         return 'friends';
       }
       return null;
-    })
-    .catch((err) => {
-      console.log('[model] Error checking friend status', err);
-      throw err;
     })
 );
 
@@ -68,10 +61,6 @@ module.exports.add = (userId, friendId) => (
           return request;
         });
     })
-    .catch((err) => {
-      console.log('[model] failed to send friend request:', err);
-      throw err;
-    })
 );
 
 module.exports.reject = (friendshipId) => {
@@ -80,9 +69,32 @@ module.exports.reject = (friendshipId) => {
     WHERE id = $1
     RETURNING *`;
   return db.query(query, [friendshipId])
-    .then(({ rows }) => rows[0])
-    .catch((err) => {
-      console.log('[model] error rejecting request', err);
-      throw err;
+    .then(({ rows }) => rows[0]);
+};
+
+module.exports.getFriendsByUserId = (userId) => {
+  const query = `
+    SELECT u.id AS user_id,
+      (SELECT json_agg(friend)
+      FROM (
+          SELECT uf.id AS friendshipId, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
+          FROM friends_list uf JOIN users f
+            ON (uf.user_id = u.id AND uf.friend_id = f.id)
+            ) AS friend
+        ) AS friends,
+      (SELECT json_agg(request)
+      FROM (
+        SELECT uf.id AS friendshipId, uf.user_id, uf.friend_id, f.username, f.bio, f.profile_image, uf.timestamp
+        FROM friend_requests uf JOIN users f
+        ON (uf.friend_id = u.id AND uf.user_id = f.id)
+        ) AS request
+      ) AS friend_requests
+    FROM users AS u
+    WHERE u.id = $1`;
+  db.query(query, [userId])
+    .then(({ rows }) => {
+      const friendsList = rows[0];
+      console.log('[model] received friend info:', friendsList);
+      return friendsList;
     });
 };
