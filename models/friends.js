@@ -91,7 +91,7 @@ module.exports.getFriendsByUserId = (userId) => {
       ) AS friend_requests
     FROM users AS u
     WHERE u.id = $1`;
-  db.query(query, [userId])
+  return db.query(query, [userId])
     .then(({ rows }) => {
       const friendsList = rows[0];
       console.log('[model] received friend info:', friendsList);
