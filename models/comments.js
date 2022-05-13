@@ -1,8 +1,9 @@
+/* eslint-disable camelcase */
 const db = require('../db');
 
 module.exports.addComment = (comment) => {
   const { user_id, trail_id, body } = comment;
-  console.log('comment here', comment)
+  console.log('[model] comment here', comment);
   const query = `
     INSERT INTO comments (user_id, trail_id, body, username)
     SELECT $1, $2, $3, u.username
