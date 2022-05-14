@@ -27,11 +27,13 @@ router.get('/status', (req, res) => {
     });
 });
 
-router.delete(':friendshipId/reject', (req, res) => {
+router.delete('/:friendshipId/reject', (req, res) => {
   const { friendshipId } = req.params;
-  console.log('[routes] friend request acceptance:', req.body, 'reject:', friendshipId);
+  console.log('[routes] friend request rejection:', friendshipId);
   friends.reject(friendshipId)
-    .then((friendship) => {
+    .then((result) => {
+      const friendship = result;
+      friendship.status = 'deleted';
       console.log('[route] friendship updated:', friendship);
       res.send(friendship);
     })
