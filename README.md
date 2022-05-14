@@ -24,7 +24,7 @@ $ npm start
 
 ## Trails
 ---
-### `/trails/:trailId`
+### `GET /trails/:trailId`
 - Example usage:
 ```
 $ curl 127.0.0.1:3005/trails/2
@@ -77,7 +77,7 @@ $ curl 127.0.0.1:3005/trails/2
   ]
 }
 ```
-### `/trails/map?coords`
+### `GET /trails/map?coords`
 - Full query parameters:
 ```
 /trails/map?swlat=__ &swlng=__ &nelat=__ &nelng=__
@@ -119,13 +119,13 @@ $ curl -G 127.0.0.1:3005/trails/map
 
 ## Users
 ---
-### `POST users/signup`
+### `POST /users/signup`
 - Generates a `user_id` for the user by adding them to the database.
 - Required data: `{ email: <user email address> }`
   - Optional: `{ email, profile_image, bio, username }`
 - Example usage:
 ```
-curl -X POST 127.0.0.1:3005/users/signup -d '{ "email": "ecurrie8@state.gov", "bio": "love hiking" }'
+curl -X POST 127.0.0.1:3005/users/signup -d '{ "email": "ecurrie8@state.gov", "bio": "I love hiking" }'
 ```
 - Response:
 ```
@@ -137,10 +137,12 @@ curl -X POST 127.0.0.1:3005/users/signup -d '{ "email": "ecurrie8@state.gov", "b
 ```
   - Session ID get bound to user as a cookie (but so does the user_id for purposes of development)
 
-
 ### `POST users/login`
-- Required data: `{ email: <user email address> }`
-- Example usage:
+- **Required data:**
+```
+{ email: <user email address> }
+```
+- **Example usage**:
 ```
 curl -X POST 127.0.0.1:3005/users/login -d '{ "email": "ecurrie8@state.gov" }'
 ```
@@ -152,11 +154,10 @@ curl -X POST 127.0.0.1:3005/users/login -d '{ "email": "ecurrie8@state.gov" }'
   session_id: 'c4a14664-03e5-4cf4-a979-46fb13a4ee33'
 }
 ```
-  - Session ID get bound to user as a cookie (but so does the user_id for purposes of development)
 
-
-### `/users/me`
-- Gets user profile based on cookie
+### `GET /users/me[?userId=USER_ID]`
+- ~~Gets user profile based on cookie~~
+- Get the full details of a user profile
 ```
 curl 127.0.0.1:3005/users/me -b 'trail-comp=abcd123' -b 'trail-comp-id=10'
 ```
@@ -192,6 +193,49 @@ curl 127.0.0.1:3005/users/me -b 'trail-comp=abcd123' -b 'trail-comp-id=10'
   ]
 }
 ```
+
+## Activities ------------------------------------------------------------------------------------
+```
+curl -X POST 127.0.0.1:3005/activity/add -H 'Content-Type:application/json' -d '{"trailId":3, "userId":10}'
+
+--> { id: 104, timestamp: 2022-05-12T02:41:48.912Z }
+```
+## Friends ------------------------------------------------------------------------------------
+### add:
+```
+curl -X POST 127.0.0.1:3005/friends/add -H 'Content-Type:application/json' -d '{"userId":122, "friendId":50}'
+
+-->
+{
+  "id": 101,
+  "status": "pending",
+  "timestamp": "2022-05-12T05:27:58.730Z"
+}
+```
+### Friend reject
+```
+curl -X PUT 127.0.0.1:3005/friends/reject -H 'Content-Type:application/json' -d '{"userId":5, "friendId":12}'
+
+--> {}
+```
+
+## Comments ------------------------------------------------------------------------------------
+```
+curl -X POST 127.0.0.1:3005/comments/add -H 'Content-Type:application/json' -d '{"userId": 5, "trailId": 3, "body":"Im the best hiker"}'
+
+-->
+{
+  id: 103,
+  username: 'tlaunder4',
+  body: 'Im the best hiker',
+  timestamp: 2022-05-12T06:09:29.069Z
+}
+```
+
+```
+curl -X DELETE 127.0.0.1:3005/users/50
+```
+
 
 ## Comments:
 ---
