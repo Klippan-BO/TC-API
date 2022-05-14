@@ -25,19 +25,19 @@ const checkFriendStatus = (userId, friendId) => {
     });
 };
 
-module.exports.checkFriendStatus = (userId, friendId) => (
+module.exports.getStatus = (userId, friendId) => (
   checkFriendStatus(userId, friendId)
     .then((status) => {
-      if (status === 1) {
-        return 'request sent';
+      switch (status) {
+        case 1:
+          return 'requested';
+        case 2:
+          return 'pending';
+        case 3:
+          return 'friends';
+        default:
+          return null;
       }
-      if (status === 2) {
-        return 'request pending';
-      }
-      if (status === 3) {
-        return 'friends';
-      }
-      return null;
     })
 );
 
