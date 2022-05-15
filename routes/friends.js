@@ -31,7 +31,7 @@ router.get('/:friendId/status', (req, res) => {
   const { userId } = req.query;
   const { friendId } = req.params;
   console.log('[routes] Request for friend status:', req.query);
-  friends.checkFriendStatus(userId, friendId)
+  friends.getStatus(userId, friendId)
     .then((status) => {
       res.send(status);
     })

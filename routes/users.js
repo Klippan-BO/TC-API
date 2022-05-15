@@ -5,10 +5,10 @@ router.get('/me', (req, res) => {
   // Gets user profile using cookie
   // Currently does not authenticate the user by comparing the session id
   // Only checks if the cookie exists
-  const { userId } = req.query;
-  // const session = req.cookies['trail-comp'];
-  // const userId = req.cookies['trail-comp-user'];
-  console.log('[routes] request to get current users full user profile');
+  // const { userId } = req.query;
+  const session = req.cookies['trail-comp'];
+  const userId = req.cookies['trail-comp-user'];
+  console.log('[routes] request to get current users full user profile', userId, session);
   users.getAuthorizedUserProfile(userId)
     .then((user) => {
       console.log('[routes] Sending back full user profile');
