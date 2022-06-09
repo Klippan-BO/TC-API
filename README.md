@@ -23,8 +23,9 @@ $ npm start
 # Routes:
 
 ## Trails
-
-### `/trails/:trailId`
+---
+### Get a trail
+`GET /trails/:trailId`
 - Example usage:
 ```
 $ curl 127.0.0.1:3005/trails/2
@@ -77,25 +78,26 @@ $ curl 127.0.0.1:3005/trails/2
   ]
 }
 ```
-### `/trails/map?coords`
+### `GET /trails/map?coords`
 - Full query parameters:
 ```
-/trails/map?swlat=__ &swlng=__ &nelat=__ &nelng=__
+/trails/map
 ```
-  - With values representing the coordinates of the *southwest* and *northeast* points of a boundary box
-    - `swlat` = Southwestern most latitude
-    - `swlng` = Southwestern most longitude
-    - `nelat` = Northeastern most latitude
-    - `nelng` = Northeastern most longitude
-- Example usage:
+
+**query parameters**
+|  param  | type  | description |
+| -------- | ----- | ------ |
+| `swlat`  | decimal | southwestern most latitude |
+| `swlng`  | decimal | southwestern most longitude |
+| `nelat`  | decimal | northeastern most latitude |
+| `nelng`  | decimal | northeastern most longitude |
+
+**Example:**
 ```
-$ curl -G 127.0.0.1:3005/trails/map
--d 'swlat=36.679200'
--d 'swlng=-122.754904'
--d 'nelat=37.379686'
--d 'nelng=-121.975038'
+$ curl -G 127.0.0.1:3005/trails/map -d 'swlat=36.679200' -d 'swlng=-122.754904' -d 'nelat=37.379686' -d 'nelng=-121.975038'
 ```
-- Response:
+
+**Response:**
 ```
 [
   {
@@ -118,14 +120,22 @@ $ curl -G 127.0.0.1:3005/trails/map
 ```
 
 ## Users
-
-### `POST users/signup`
+---
+### `POST /users/signup`
 - Generates a `user_id` for the user by adding them to the database.
-- Required data: `{ email: <user email address> }`
-  - Optional: `{ email, profile_image, bio, username }`
+
+**body parameters:**
+
+|  param  | type  |description |
+| --------| ----- | ----------- |
+| `email`  | string | email address used to sign up |
+| `bio`  | string |  user biography |
+| `profile_image` | string  | string representing URL pointing to profile photo |
+| `username`  | string  | username for user |
+
 - Example usage:
 ```
-curl -X POST 127.0.0.1:3005/users/signup -d '{ "email": "ecurrie8@state.gov", "bio": "love hiking" }'
+curl -X POST 127.0.0.1:3005/users/signup -d '{ "email": "ecurrie8@state.gov", "bio": "I love hiking" }'
 ```
 - Response:
 ```
@@ -137,14 +147,19 @@ curl -X POST 127.0.0.1:3005/users/signup -d '{ "email": "ecurrie8@state.gov", "b
 ```
   - Session ID get bound to user as a cookie (but so does the user_id for purposes of development)
 
-
 ### `POST users/login`
-- Required data: `{ email: <user email address> }`
-- Example usage:
+
+**body parameters:**
+
+|  param  | type  | description |
+| ------- | ----- | ------------ |
+| `email`  | string | email address used to sign up |
+
+**Example:**
 ```
 curl -X POST 127.0.0.1:3005/users/login -d '{ "email": "ecurrie8@state.gov" }'
 ```
-- Response:
+**Response:**
 ```
 {
   id: 9,
@@ -152,15 +167,21 @@ curl -X POST 127.0.0.1:3005/users/login -d '{ "email": "ecurrie8@state.gov" }'
   session_id: 'c4a14664-03e5-4cf4-a979-46fb13a4ee33'
 }
 ```
-  - Session ID get bound to user as a cookie (but so does the user_id for purposes of development)
 
+### `GET /users/me`
+- ~~Gets user profile based on cookie~~
+- Get the full details of a user profile
 
-### `/users/me`
-- Gets user profile based on cookie
+**query parameters**
+|  param  | type  | description |
+| --------| ----- | ------ |
+| `userId`  | integer | user ID to retreive data for |
+
+**Example:**
 ```
-curl 127.0.0.1:3005/users/me -b 'trail-comp=abcd123' -b 'trail-comp-id=10'
+$ curl 127.0.0.1:3005/users/me?userId=10
 ```
-- Response:
+**Response:**
 ```
 {
   id: 10,
@@ -192,6 +213,83 @@ curl 127.0.0.1:3005/users/me -b 'trail-comp=abcd123' -b 'trail-comp-id=10'
   ]
 }
 ```
+
+## Friends
+
+### `POST /friends/request`
+Send or accept a friend request from one user to another user
+
+**query parameters:**
+|  param  | description |
+| --------| ----------- |
+| `from`  | user ID of the user sending the friend request |
+| `to`    | user ID of the user to receive the friend request |
+
+### `POST /friends/add` (legacy):
+Sends a friend request from one user to another user
+
+**body parameters:**
+| param | type  | description |
+| ----- | ----- | ----------- |
+| `userId` | integer | user ID of the user sending the request |
+| `friendId` | integer | user ID of the user receiving the request |
+
+**Example:**
+```
+$ curl -X POST 127.0.0.1:3005/friends/add -H 'Content-Type:application/json' -d '{"userId":122, "friendId":50}'
+```
+
+**Response:**
+```
+{
+  "id": 101,
+  "status": "sent",
+  "timestamp": "2022-05-12T05:27:58.730Z"
+}
+```
+### Friend reject
+```
+curl -X PUT 127.0.0.1:3005/friends/reject -H 'Content-Type:application/json' -d '{"userId":5, "friendId":12}'
+
+--> {}
+```
+## Activities
+---
+```
+curl -X POST 127.0.0.1:3005/activity/add -H 'Content-Type:application/json' -d '{"trailId":3, "userId":10}'
+
+--> { id: 104, timestamp: 2022-05-12T02:41:48.912Z }
+```
+## Comments
+---
+```
+curl -X POST 127.0.0.1:3005/comments/add -H 'Content-Type:application/json' -d '{"userId": 5, "trailId": 3, "body":"Im the best hiker"}'
+
+-->
+{
+  id: 103,
+  username: 'tlaunder4',
+  body: 'Im the best hiker',
+  timestamp: 2022-05-12T06:09:29.069Z
+}
+```
+
+```
+curl -X DELETE 127.0.0.1:3005/users/50
+```
+
+
+## Comments:
+---
+
+## Photos:
+---
+
+## Activities:
+---
+
+## Friends:
+---
 
 
 # Creating a local database with sample data

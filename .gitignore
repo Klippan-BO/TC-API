@@ -10,7 +10,7 @@ node_modules/
 .DS_Store
 
 # specific etl
-etl.sql
+
 
 # large files:
 db.sql

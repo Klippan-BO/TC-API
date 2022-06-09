@@ -14,10 +14,24 @@ router.post('/add', (req, res) => {
     });
 });
 
-router.get('/status', (req, res) => {
-  const { userId, friendId } = req.query;
+router.post('/request', (req, res) => {
+  const { from, to } = req.query;
+  console.log(`[routes] incoming friend request from ${from} to ${to}`);
+  friends.add(from, to)
+    .then((friendship) => {
+      res.send(friendship);
+    })
+    .catch((err) => {
+      console.log('[routes] error creating friendship:', err);
+      res.status(500).send(err);
+    });
+});
+
+router.get('/:friendId/status', (req, res) => {
+  const { userId } = req.query;
+  const { friendId } = req.params;
   console.log('[routes] Request for friend status:', req.query);
-  friends.checkFriendStatus(userId, friendId)
+  friends.getStatus(userId, friendId)
     .then((status) => {
       res.send(status);
     })
