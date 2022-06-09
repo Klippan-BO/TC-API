@@ -294,3 +294,4 @@ curl -X DELETE 127.0.0.1:3005/users/50
 
 # Creating a local database with sample data
 Under construction
+*Utilize etl.sql to import the seed data into the database. This scripts includes addition of usernames to tables other than users.*
